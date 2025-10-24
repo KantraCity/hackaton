@@ -467,65 +467,11 @@ func (a *App) extractKeywordsWithLLM(query string) ([]string, error) {
 	return keywordResponse.Keywords, nil
 }
 
-func extractNumbersAndText(text string) (numbers []string, words []string) {
-	reNumbers := regexp.MustCompile(`[\d]+[xх\-.]*[\d]*`)
-
-	numbers = reNumbers.FindAllString(text, -1)
-
-	textOnly := reNumbers.ReplaceAllString(text, " ")
-
-	words = tokenize(textOnly)
-	return
-}
-
-func isNumeric(s string) (bool, int) {
-	val, err := strconv.Atoi(s)
-	if err != nil {
-		return false, 0
-	}
-	return true, val
-}
-
 func tokenize(text string) []string {
 	lowerText := strings.ToLower(text)
 	r := strings.NewReplacer(",", " ", ".", " ", "(", " ", ")", " ", "/", " ", "\\", " ", "[", " ", "]", " ", "-", " ", "\"", " ")
 	textWithSpaces := r.Replace(lowerText)
 	return strings.Fields(textWithSpaces)
-}
-
-func computeLevenshteinDistance(a, b string) int {
-	ra, rb := []rune(a), []rune(b)
-	la, lb := len(ra), len(rb)
-	if la == 0 {
-		return lb
-	}
-	if lb == 0 {
-		return la
-	}
-	prev := make([]int, lb+1)
-	cur := make([]int, lb+1)
-	for j := 0; j <= lb; j++ {
-		prev[j] = j
-	}
-	for i := 1; i <= la; i++ {
-		cur[0] = i
-		for j := 1; j <= lb; j++ {
-			cost := 0
-			if ra[i-1] != rb[j-1] {
-				cost = 1
-			}
-			min := prev[j] + 1
-			if val := cur[j-1] + 1; val < min {
-				min = val
-			}
-			if val := prev[j-1] + cost; val < min {
-				min = val
-			}
-			cur[j] = min
-		}
-		prev, cur = cur, prev
-	}
-	return prev[lb]
 }
 
 func (a *App) getAccessToken() (string, error) {
