@@ -1,0 +1,11 @@
+{
+  "useGigaChat": true,
+  "gigaChat": {
+    "apiKey": "PASTE_YOUR_BASE64_GIGACHAT_API_KEY_HERE",
+    "model": "GigaChat:latest"
+  },
+  "ollama": {
+    "baseURL": "http://localhost:11434",
+    "model": "llama3"
+  }
+}
